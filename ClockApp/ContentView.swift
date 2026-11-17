@@ -79,10 +79,12 @@ struct AnalogClock: View {
             for i in 0..<60 {
                 let major = i % 5 == 0
                 let angle = Double(i) / 60 * 2 * .pi
+                let s = CGFloat(Foundation.sin(angle))
+                let c = CGFloat(Foundation.cos(angle))
                 let outer = radius - 4
                 let inner = radius - (major ? 14 : 8)
-                let p1 = CGPoint(x: center.x + sin(angle) * outer, y: center.y - cos(angle) * outer)
-                let p2 = CGPoint(x: center.x + sin(angle) * inner, y: center.y - cos(angle) * inner)
+                let p1 = CGPoint(x: center.x + s * outer, y: center.y - c * outer)
+                let p2 = CGPoint(x: center.x + s * inner, y: center.y - c * inner)
                 var tick = Path()
                 tick.move(to: p1)
                 tick.addLine(to: p2)
@@ -118,9 +120,11 @@ struct AnalogClock: View {
     private func drawHand(_ ctx: inout GraphicsContext, center: CGPoint, angle: Double,
                           length: CGFloat, width: CGFloat, color: Color, tail: CGFloat) {
         let rad = angle * .pi / 180
+        let dx = CGFloat(Foundation.sin(rad))
+        let dy = CGFloat(Foundation.cos(rad))
         var path = Path()
-        path.move(to: CGPoint(x: center.x - sin(rad) * tail, y: center.y + cos(rad) * tail))
-        path.addLine(to: CGPoint(x: center.x + sin(rad) * length, y: center.y - cos(rad) * length))
+        path.move(to: CGPoint(x: center.x - dx * tail, y: center.y + dy * tail))
+        path.addLine(to: CGPoint(x: center.x + dx * length, y: center.y - dy * length))
         ctx.stroke(path, with: .color(color),
                    style: StrokeStyle(lineWidth: width, lineCap: .round))
     }
